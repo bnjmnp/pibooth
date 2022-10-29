@@ -294,7 +294,14 @@ class GpCamera(BaseCamera):
 
         if self.capture_iso != self.preview_iso:
             self.set_config_value('imgsettings', 'iso', self.capture_iso)
-
+        
+        LOGGER.info('Check for cam events')
+        while 1:
+            event_type, event_data = self._cam.wait_for_event(1000)
+            if not event_type:
+                break
+            LOGGER.info('Cam event %d', event_type)
+        time.sleep(0.3)
         self._captures.append((self._cam.capture(gp.GP_CAPTURE_IMAGE), effect))
         time.sleep(0.3)  # Necessary to let the time for the camera to save the image
 
